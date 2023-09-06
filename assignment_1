@@ -1,0 +1,71 @@
+This is a cow problem !
+import numpy as np
+import matplotlib.pyplot as plt
+x_values = []
+y_values = []
+potential_energy_values = []
+kinetic_energy_values = []
+total_energy_values = []
+
+# Define a function to calculate the total force vector
+def calculate_total_force(position, velocity):
+    # Gravity
+    gravitational_force = np.array([0, -mass_cow * g])
+    # Wind resistance
+    relative_velocity = np.sqrt(velocity[0]**2 + velocity[1]**2)
+    drag_force_magnitude = 0.5 * air_density * relative_velocity**2 * drag_coefficient * cross_sectional_area
+    drag_force_direction = -velocity / relative_velocity
+    drag_force = drag_force_magnitude * drag_force_direction
+    total_force = gravitational_force + drag_force
+    return total_force
+def update_position_velocity(position, velocity, force, time_step):
+    acceleration = force / mass_cow
+    new_velocity = velocity + acceleration * time_step
+    new_position = position + velocity * time_step    
+    return new_position, new_velocity
+
+def calculate_energy(position, velocity):
+    potential_energy = mass_cow * g * position[1]
+    kinetic_energy = 0.5 * mass_cow * (velocity[0]**2 + velocity[1]**2)
+    total_energy = potential_energy + kinetic_energy
+    
+    return potential_energy, kinetic_energy, total_energy
+
+# Simulation loop
+while initial_y >= 0:
+    time_values.append(time)
+    x_values.append(initial_x)
+    y_values.append(initial_y)
+    
+    force = calculate_total_force([initial_x, initial_y], [initial_vx, initial_vy])
+    initial_x, initial_vy = update_position_velocity([initial_x, initial_y], [initial_vx, initial_vy], force, time_step)
+    
+    potential_energy, kinetic_energy, total_energy = calculate_energy([initial_x, initial_y], [initial_vx, initial_vy])
+    potential_energy_values.append(potential_energy)
+    kinetic_energy_values.append(kinetic_energy)
+    total_energy_values.append(total_energy)
+    
+    time += time_step
+
+# Plot the trajectory
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+plt.plot(x_values, y_values)
+plt.title('Spherical Cow Motion Simulation')
+plt.xlabel('Horizontal Distance (m)')
+plt.ylabel('Vertical Distance (m)')
+plt.grid(True)
+
+# Plot energy
+plt.subplot(1, 2, 2)
+plt.plot(time_values, potential_energy_values, label='Potential Energy')
+plt.plot(time_values, kinetic_energy_values, label='Kinetic Energy')
+plt.plot(time_values, total_energy_values, label='Total Energy')
+plt.title('Energy vs. Time')
+plt.xlabel('Time (s)')
+plt.ylabel('Energy (Joules)')
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
