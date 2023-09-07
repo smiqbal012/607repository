@@ -1,4 +1,3 @@
-This is a cow problem !
 import numpy as np
 import matplotlib.pyplot as plt
 x_values = []
