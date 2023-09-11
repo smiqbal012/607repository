@@ -1,0 +1,28 @@
+def calculate_total_force(position_x, position_y, velocity_x, velocity_y):
+    gravitational_force = mass_cow * np.array([0, -g])  # Gravity force
+    relative_velocity = np.array([velocity_x, velocity_y])
+    drag_force = -0.5 * air_density * np.linalg.norm(relative_velocity)**2 * drag_coefficient * cross_sectional_area * relative_velocity  # Wind resistance force
+    total_force = gravitational_force + wind_resistance_constant * drag_force
+    return total_force
+
+def update_position_velocity(position_x, position_y, velocity_x, velocity_y, force, time_step):
+    acceleration = force / mass_cow
+    new_velocity = np.array([velocity_x, velocity_y]) + acceleration * time_step
+    new_position = np.array([position_x, position_y]) + new_velocity * time_step
+    return new_position[0], new_position[1], new_velocity[0], new_velocity[1]
+
+def calculate_energy(position_y, velocity_x, velocity_y):
+    potential_energy = mass_cow * g * position_y
+    kinetic_energy = 0.5 * mass_cow * (velocity_x**2 + velocity_y**2)
+    total_energy = potential_energy + kinetic_energy
+    return potential_energy, kinetic_energy, total_energy
+
+while initial_y >= 0:
+    time_values.append(time)
+    x_values.append(initial_x)
+    y_values.append(initial_y)
+    
+    total_force = calculate_total_force(initial_x, initial_y, initial_vx, initial_vy)
+    initial_x, initial_y, initial_vx, initial_vy = update_position_velocity(initial_x, initial_y, initial_vx, initial_vy, total_force, time_step)
+    
+    time += time_step
